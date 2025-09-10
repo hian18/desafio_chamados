@@ -187,6 +187,8 @@ msgstr "Descrição é obrigatória."
 #: front/views.py:161
 msgid "Priority is required."
 msgstr "Prioridade é obrigatória."
+msgid "Priority"
+msgstr "Prioridade"
 
 #: front/views.py:164
 msgid "Status is required."

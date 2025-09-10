@@ -171,7 +171,6 @@
                         <div class="col-md-6 mb-3">
                             <label for="priority" class="form-label">{% trans "Priority" %} <span class="text-danger">*</span></label>
                             <select class="form-select" id="priority" name="priority" required>
-                                <!-- Debug: {{ priority_choices }} -->
                                 {% for value, label in priority_choices %}
                                 <option value="{{ value }}" {% if value == 'medium' %}selected{% endif %}>
                                     {{ label }}
@@ -206,9 +205,17 @@
 
 {% block extra_js %}
 <script>
+// Set default values when modal is shown
+document.getElementById('createTicketModal').addEventListener('shown.bs.modal', function () {
+    // Ensure medium priority is selected
+    document.getElementById('priority').value = 'medium';
+});
+
 // Clear form when modal is hidden
 document.getElementById('createTicketModal').addEventListener('hidden.bs.modal', function () {
     document.getElementById('createTicketForm').reset();
+    // Ensure medium priority is selected after reset
+    document.getElementById('priority').value = 'medium';
 });
 
 // Form validation
