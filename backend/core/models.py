@@ -59,31 +59,9 @@ class CustomUser(AbstractUser):
     class Meta:
         verbose_name = 'User'
         verbose_name_plural = 'Users'
-        permissions = [
-            ('can_view_tickets', 'Can view tickets'),
-            ('can_create_tickets', 'Can create tickets'),
-            ('can_edit_tickets', 'Can edit tickets'),
-            ('can_delete_tickets', 'Can delete tickets'),
-            ('can_assign_tickets', 'Can assign tickets'),
-            ('can_close_tickets', 'Can close tickets'),
-            ('can_view_reports', 'Can view reports'),
-            ('can_manage_users', 'Can manage users'),
-        ]
 
     def get_full_name(self):
         return f"{self.first_name} {self.last_name}".strip() or self.username
-
-    def has_ticket_permission(self, permission):
-        """Check if user has specific ticket permission"""
-        return self.has_perm(f'core.{permission}') or self.is_superuser
-
-    def is_ticket_manager(self):
-        """Check if user can manage tickets"""
-        return self.role in ['admin', 'manager'] or self.is_superuser
-
-    def is_ticket_agent(self):
-        """Check if user can work with tickets"""
-        return self.role in ['admin', 'manager', 'agent'] or self.is_superuser
 
 
 class BaseModel(models.Model):
