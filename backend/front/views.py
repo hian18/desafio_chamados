@@ -63,7 +63,12 @@ def dashboard_view(request):
     if priority_filter:
         tickets = tickets.filter(priority=priority_filter)
     if search_query:
-        tickets = tickets.filter(title__icontains=search_query)
+        # Busca por título ou ID
+        from django.db.models import Q
+        tickets = tickets.filter(
+            Q(title__icontains=search_query) | 
+            Q(id__icontains=search_query)
+        )
     # Pagination
     paginator = Paginator(tickets, 10)  # 10 tickets per page
     page_number = request.GET.get('page')
