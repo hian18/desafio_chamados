@@ -5,16 +5,16 @@ from enum import Enum
 
 class TicketStatus(Enum):
     """Enum for ticket statuses"""
+
     OPEN = 'open'
     IN_PROGRESS = 'in_progress'
-    
     RESOLVED = 'resolved'
     CANCELLED = 'cancelad'
 
     @classmethod
     def get_non_editable_statuses(cls):
         """Returns statuses that cannot be edited"""
-        return [cls.RESOLVED,cls.CANCELLED.value]
+        return [cls.RESOLVED, cls.CANCELLED.value]
 
     @classmethod
     def get_editable_choices(cls):
@@ -117,7 +117,9 @@ class Ticket(BaseModel):
     description = models.TextField(verbose_name='Description')
     priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium', verbose_name='Priority')
     department = models.CharField(max_length=20, verbose_name='Department')
-    status = models.CharField(max_length=20, choices=TicketStatus.get_choices(), default=TicketStatus.OPEN.value, verbose_name='Status')
+    status = models.CharField(
+        max_length=20, choices=TicketStatus.get_choices(), default=TicketStatus.OPEN.value, verbose_name='Status'
+    )
     created_by = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE, related_name='created_tickets', verbose_name='Created By'
     )

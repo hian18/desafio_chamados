@@ -147,7 +147,6 @@ class TicketViewSet(viewsets.ModelViewSet):
             'total': queryset.count(),
             'open': queryset.filter(status=TicketStatus.OPEN.value).count(),
             'in_progress': queryset.filter(status=TicketStatus.IN_PROGRESS.value).count(),
-            'pending': queryset.filter(status=TicketStatus.PENDING.value).count(),
             'resolved': queryset.filter(status=TicketStatus.RESOLVED.value).count(),
             'cancelled': queryset.filter(status=TicketStatus.CANCELLED.value).count(),
         }
