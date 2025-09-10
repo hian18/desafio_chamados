@@ -234,3 +234,28 @@ msgstr "Ticket #%(id)s excluído com sucesso!"
 #: front/views.py:218
 msgid "Error deleting ticket: %(error)s"
 msgstr "Erro ao excluir ticket: %(error)s"
+
+msgid "Open"
+msgstr "Aberto"
+
+msgid "Resolved"
+msgstr "Resolvido"
+
+msgid "In Progress"
+msgstr "Em Atendimento"
+
+msgid "Cancelled"
+msgstr "Cancelado"
+
+msgid "Baixa"
+msgstr "Baixa"
+
+msgid "Média"
+msgstr "Média"
+
+msgid "Alta"
+msgstr "Alta"
+
+msgid "Urgente"
+msgstr "Urgente"
+

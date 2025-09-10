@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from django.utils.translation import gettext_lazy as _
 from core.models import Ticket, CustomUser, TicketStatus
 
 
@@ -19,8 +20,8 @@ class TicketSerializer(serializers.ModelSerializer):
     """Serializer for Ticket"""
     created_by = UserSerializer(read_only=True)
     assigned_to = UserSerializer(read_only=True)
-    status_display = serializers.CharField(source='get_status_display', read_only=True)
-    priority_display = serializers.CharField(source='get_priority_display', read_only=True)
+    status_display = serializers.SerializerMethodField()
+    priority_display = serializers.SerializerMethodField()
     
     class Meta:
         model = Ticket
@@ -30,6 +31,26 @@ class TicketSerializer(serializers.ModelSerializer):
             'assigned_to', 'created_at', 'updated_at'
         ]
         read_only_fields = ['id', 'created_at', 'updated_at', 'created_by']
+    
+    def get_status_display(self, obj):
+        """Get translated status display"""
+        status_map = {
+            TicketStatus.OPEN.value: _('Open'),
+            TicketStatus.IN_PROGRESS.value: _('In Progress'),
+            TicketStatus.RESOLVED.value: _('Resolved'),
+            TicketStatus.CANCELLED.value: _('Cancelled'),
+        }
+        return str(status_map.get(obj.status, obj.status))
+    
+    def get_priority_display(self, obj):
+        """Get translated priority display"""
+        priority_map = {
+            'low': _('Baixa'),
+            'medium': _('Média'),
+            'high': _('Alta'),
+            'urgent': _('Urgente'),
+        }
+        return str(priority_map.get(obj.priority, obj.priority))
 
 
 class TicketCreateSerializer(serializers.ModelSerializer):

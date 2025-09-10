@@ -10,29 +10,29 @@ class TicketStatus(Enum):
     OPEN = 'open'
     IN_PROGRESS = 'in_progress'
     RESOLVED = 'resolved'
-    CANCELLED = 'cancelad'
+    CANCELLED = 'cancelled'
 
     @classmethod
     def get_non_editable_statuses(cls):
         """Returns statuses that cannot be edited"""
-        return [cls.RESOLVED, cls.CANCELLED.value]
+        return [cls.RESOLVED.value, cls.CANCELLED.value]
 
     @classmethod
     def get_editable_choices(cls):
         """Returns only editable status choices (without resolved and closed)"""
         return [
-            (cls.OPEN.value, _('Aberto')),
-            (cls.IN_PROGRESS.value, _('Em Atendimento')),
+            (cls.OPEN.value, _('Open')),
+            (cls.IN_PROGRESS.value, _('In Progress')),
         ]
 
     @classmethod
     def get_choices(cls):
         """Returns choices for Django model field"""
         return [
-            (cls.OPEN.value, _('Aberto')),
-            (cls.IN_PROGRESS.value, _('Em Atendimento')),
-            (cls.RESOLVED.value, _('Resolvido')),
-            (cls.CANCELLED.value, _('Cancelado')),
+            (cls.OPEN.value, _('Open')),
+            (cls.IN_PROGRESS.value, _('In Progress')),
+            (cls.RESOLVED.value, _('Resolved')),
+            (cls.CANCELLED.value, _('Cancelled')),
         ]
 
 

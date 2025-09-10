@@ -9,6 +9,7 @@ from services.permissions import require_roles
 from services.roles import SUPPORT_READ_ROLES, SUPPORT_UPDATE_ROLES
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.decorators import api_view, permission_classes
+from django.utils.translation import gettext_lazy as _
 
 from .serializers import (
     ApiInfoSerializer,
@@ -207,3 +208,5 @@ class TicketViewSet(viewsets.ModelViewSet):
         websocket_service.send_custom_notification(message, notification_type)
 
         return Response({'success': True, 'message': 'Notification sent successfully'})
+
+    
