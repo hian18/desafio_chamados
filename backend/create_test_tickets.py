@@ -9,7 +9,6 @@ from datetime import datetime, timedelta
 from django.utils import timezone
 from core.models import Ticket, CustomUser, TicketStatus
 
-print(1)
 # Dados para gerar tickets aleatórios
 TITLES = [
     "Problema com login no sistema",
@@ -31,7 +30,7 @@ TITLES = [
     "Falha no sistema de autenticação",
     "Problema com banco de dados",
     "Solicitação de configuração de VPN",
-    "Erro no sistema de logs"
+    "Erro no sistema de logs",
 ]
 
 DESCRIPTIONS = [
@@ -54,31 +53,79 @@ DESCRIPTIONS = [
     "Sistema de autenticação está rejeitando usuários válidos ocasionalmente.",
     "Banco de dados está com performance degradada. Consultas estão lentas.",
     "Configuração de VPN necessária para novo escritório remoto.",
-    "Sistema de logs não está registrando eventos corretamente."
+    "Sistema de logs não está registrando eventos corretamente.",
 ]
 
-DEPARTMENTS = [
-    "TI", "RH", "Financeiro", "Vendas", "Marketing", 
-    "Operações", "Jurídico", "Comercial", "Suporte"
-]
+DEPARTMENTS = ["TI", "RH", "Financeiro", "Vendas", "Marketing", "Operações", "Jurídico", "Comercial", "Suporte"]
 
 PRIORITIES = ['low', 'medium', 'high', 'urgent']
 STATUSES = [TicketStatus.OPEN.value, TicketStatus.IN_PROGRESS.value, TicketStatus.RESOLVED.value]
 
+
+def create_test_users():
+    """Cria usuários de teste se não existirem"""
+    from django.contrib.auth.hashers import make_password
+
+    # Usuários de teste
+    test_users = [
+        {
+            'username': 'agent@cloudpark.com',
+            'email': 'agent@cloudpark.com',
+            'first_name': 'Joao',
+            'last_name': '',
+            'role': 'agent',
+            'password': '123',
+        },
+        {
+            'username': 'technician@cloudpark.com',
+            'email': 'technician@cloudpark.com',
+            'first_name': 'Maria',
+            'last_name': '',
+            'role': 'technician',
+            'password': '123',
+        },
+    ]
+
+    created_users = []
+    for user_data in test_users:
+        user, created = CustomUser.objects.get_or_create(
+            email=user_data['email'],
+            defaults={
+                'username': user_data['username'],
+                'first_name': user_data['first_name'],
+                'last_name': user_data['last_name'],
+                'role': user_data['role'],
+                'password': make_password(user_data['password']),
+                'is_active': True,
+            },
+        )
+        if created:
+            print(f"✅ Usuário criado: {user_data['email']}")
+        else:
+            print(f"👤 Usuário já existe: {user_data['email']}")
+        created_users.append(user)
+
+    return created_users
+
+
 def create_test_tickets():
     """Cria 20 tickets de teste"""
-    
-    # Busca usuários existentes
-    users = list(CustomUser.objects.all())
+
+    # Cria usuários de teste primeiro
+    print("👥 Verificando/criando usuários de teste...")
+    test_users = create_test_users()
+
+    # Busca todos os usuários existentes
+    users = list(CustomUser.objects.filter(role='agent'))
     if not users:
-        print("❌ Nenhum usuário encontrado. Crie usuários primeiro.")
+        print("❌ Nenhum usuário encontrado.")
         return
-    
+
     print(f"📝 Criando 20 tickets de teste...")
     print(f"👥 Usando {len(users)} usuários disponíveis")
-    
+
     created_count = 0
-    
+
     for i in range(20):
         # Seleciona dados aleatórios
         title = random.choice(TITLES)
@@ -86,17 +133,17 @@ def create_test_tickets():
         department = random.choice(DEPARTMENTS)
         priority = random.choice(PRIORITIES)
         status = random.choice(STATUSES)
-        
+
         # Usuário criador aleatório
         created_by = random.choice(users)
-        
+
         # Usuário atribuído (pode ser None ou um usuário aleatório)
         assigned_to = random.choice(users) if random.choice([True, False]) else None
-        
+
         # Data de criação aleatória (últimos 30 dias)
         days_ago = random.randint(0, 30)
         created_at = timezone.now() - timedelta(days=days_ago)
-        
+
         # Cria o ticket
         ticket = Ticket.objects.create(
             title=title,
@@ -106,12 +153,12 @@ def create_test_tickets():
             status=status,
             created_by=created_by,
             assigned_to=assigned_to,
-            created_at=created_at
+            created_at=created_at,
         )
-        
+
         created_count += 1
         print(f"✅ Ticket #{ticket.id} criado: {title[:50]}...")
-    
+
     print(f"\n🎉 {created_count} tickets criados com sucesso!")
     print(f"📊 Estatísticas:")
     print(f"   - Total de tickets: {Ticket.objects.count()}")
