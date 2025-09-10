@@ -136,7 +136,15 @@ LOCALE_PATHS = [
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
+# Pasta de coleta (collectstatic). Usada principalmente em produção
+STATIC_ROOT = BASE_DIR / 'static_collected'
+# Diretórios adicionais de estáticos para ambiente de desenvolvimento
+# Apontando para a pasta que contém os assets (ex.: Logo-Padrao.png)
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+    "/var/www/static/",
+]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
