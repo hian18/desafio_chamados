@@ -4,10 +4,9 @@
       <!-- Left side - Branding -->
       <div class="login-branding">
         <div class="branding-content">
-          <div class="brand-icon">
-            <i class="bi bi-ticket-perforated"></i>
+          <div class="brand-logo">
+            <img :src="logoUrl" alt="OpenTicket" />
           </div>
-          <h1 class="brand-title">OpenTicket</h1>
           <p class="brand-subtitle">Sistema de Gestão de Tickets</p>
           <div class="brand-features">
             <div class="feature-item">
@@ -20,7 +19,7 @@
             </div>
             <div class="feature-item">
               <i class="bi bi-check-circle"></i>
-              <span>Relatórios em tempo real</span>
+              <span>Notifiações em tempo real</span>
             </div>
           </div>
         </div>
@@ -97,10 +96,10 @@
             <div class="demo-credentials">
               <h6>Credenciais de teste:</h6>
               <div class="credential-item">
-                <strong>Email:</strong> admin@example.com
+                <strong>Email:</strong> technician@cloudpark.com
               </div>
               <div class="credential-item">
-                <strong>Senha:</strong> admin123
+                <strong>Senha:</strong> 123
               </div>
             </div>
           </div>
@@ -113,6 +112,7 @@
 <script>
 import { useAuthStore } from '@/stores/auth'
 import { useRouter } from 'vue-router'
+import logoAsset from '@/assets/Logo-Padrao.png'
 
 export default {
   name: 'Login',
@@ -127,6 +127,7 @@ export default {
   },
   data() {
     return {
+      logoUrl: logoAsset,
       form: {
         email: '',
         password: ''
@@ -219,10 +220,14 @@ export default {
   z-index: 1;
 }
 
-.brand-icon {
-  font-size: 4rem;
+.brand-logo {
   margin-bottom: 20px;
-  opacity: 0.9;
+}
+
+.brand-logo img {
+  height: 96px;
+  width: auto;
+  filter: drop-shadow(0 2px 6px rgba(0,0,0,0.2));
 }
 
 .brand-title {

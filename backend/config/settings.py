@@ -143,6 +143,7 @@ STATIC_ROOT = BASE_DIR / 'static_collected'
 # Apontando para a pasta que contém os assets (ex.: Logo-Padrao.png)
 STATICFILES_DIRS = [
     BASE_DIR / "static",
+    BASE_DIR / "backend" / "static",
     "/var/www/static/",
 ]
 

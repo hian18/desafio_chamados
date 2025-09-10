@@ -104,7 +104,6 @@
               <option value="">Todos</option>
               <option value="open">Aberto</option>
               <option value="in_progress">Em Progresso</option>
-              <option value="pending">Pendente</option>
               <option value="resolved">Resolvido</option>
               <option value="cancelled">Cancelado</option>
             </select>
