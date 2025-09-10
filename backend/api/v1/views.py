@@ -5,6 +5,8 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db import models
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from core.models import Ticket, TicketStatus
 from .serializers import (
@@ -105,11 +107,28 @@ class TicketViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         """Set the created_by field to the current user"""
-        serializer.save(created_by=self.request.user)
+        ticket = serializer.save(created_by=self.request.user)
+        self.send_ticket_notification('ticket_created', ticket)
+        return ticket
 
     def perform_update(self, serializer):
         """Set the updated_by field to the current user"""
-        serializer.save(updated_by=self.request.user)
+        ticket = serializer.save(updated_by=self.request.user)
+        self.send_ticket_notification('ticket_updated', ticket)
+        return ticket
+
+    def send_ticket_notification(self, notification_type, ticket):
+        """Send WebSocket notification"""
+        channel_layer = get_channel_layer()
+        if channel_layer:
+            ticket_data = TicketSerializer(ticket).data
+            async_to_sync(channel_layer.group_send)(
+                'ticket_notifications',
+                {
+                    'type': notification_type,
+                    'ticket': ticket_data
+                }
+            )
 
     @extend_schema(summary="Mark ticket as resolved", description="Mark a ticket as resolved")
     @action(detail=True, methods=['post'])
@@ -133,6 +152,9 @@ class TicketViewSet(viewsets.ModelViewSet):
         ticket.status = TicketStatus.RESOLVED.value
         ticket.updated_by = request.user
         ticket.save()
+
+        # Send WebSocket notification
+        self.send_ticket_notification('ticket_resolved', ticket)
 
         serializer = self.get_serializer(ticket)
         return Response(serializer.data)

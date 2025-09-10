@@ -112,6 +112,7 @@ def create_ticket_view(request):
                 department=department,
                 created_by=request.user,
             )
+            # send_ticket_notification('ticket_created', ticket)
             messages.success(request, f'Ticket #{ticket.id} created successfully!')
             return redirect('front:ticket_detail', ticket_id=ticket.id)
         except Exception as e:
