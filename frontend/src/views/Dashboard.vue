@@ -115,7 +115,7 @@
               @input="debounceSearch"
               type="text"
               class="form-control"
-              placeholder="Buscar por título ou descrição..."
+              placeholder="Buscar por título, descrição ou ID..."
             />
           </div>
           <div class="filter-item">
@@ -669,7 +669,7 @@ export default {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
   width: 100%;
 }
@@ -721,61 +721,149 @@ export default {
   overflow: hidden;
 }
 
-/* Desktop-only layout - no mobile adjustments */
-.stats-grid {
-  grid-template-columns: repeat(6, 1fr) !important;
-  gap: 1rem !important;
-}
-
-.filters-grid {
-  grid-template-columns: 1fr 1fr 2fr 1fr !important;
-  gap: 1rem !important;
-}
-
-.filter-search {
-  grid-column: span 1 !important;
-}
-
-.header-content {
-  flex-direction: row !important;
-  justify-content: space-between !important;
-  align-items: center !important;
-}
-
-/* Desktop-specific optimizations */
-@media (min-width: 1200px) {
-  .container-fluid {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    max-width: none;
+/* Mobile responsive layout */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 0;
+  }
+  
+  .dashboard-header {
+    padding: 1rem 0;
+  }
+  
+  .header-content {
+    flex-direction: column !important;
+    gap: 1rem;
+    align-items: stretch !important;
+  }
+  
+  .header-right {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+  }
+  
+  .dashboard-title {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+  
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 0.75rem !important;
   }
   
   .stat-card {
-    padding: 18px;
+    padding: 1rem;
+    min-height: 80px;
   }
   
   .stat-icon {
-    width: 50px;
-    height: 50px;
-    font-size: 1.4rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+    margin-right: 12px;
   }
   
   .stat-content h3 {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+  }
+  
+  .stat-content p {
+    font-size: 0.75rem;
+  }
+  
+  .filters-grid {
+    grid-template-columns: 1fr !important;
+    gap: 0.75rem !important;
+  }
+  
+  .filter-search {
+    grid-column: span 1 !important;
+  }
+  
+  .table-responsive {
+    font-size: 0.8rem;
   }
   
   .table th, .table td {
-    padding: 0.7rem 0.5rem;
+    padding: 0.5rem 0.25rem;
   }
   
-  .row {
-    margin-left: -0.5rem;
-    margin-right: -0.5rem;
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
   }
   
-  .row > * {
-    padding-left: 0.5rem;
-    padding-right: 0.5rem;
+  .modal-dialog {
+    margin: 1rem;
+  }
+}
+
+/* Tablet responsive layout */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 1rem !important;
+  }
+  
+  .filters-grid {
+    grid-template-columns: 1fr 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .filter-search {
+    grid-column: span 2 !important;
+  }
+  
+  .header-content {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+}
+
+/* Desktop layout */
+@media (min-width: 1025px) {
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+    gap: 1rem !important;
+  }
+  
+  .filters-grid {
+    grid-template-columns: 1fr 1fr 2fr 1fr !important;
+    gap: 1rem !important;
+  }
+  
+  .filter-search {
+    grid-column: span 1 !important;
+  }
+  
+  .header-content {
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+  }
+}
+
+/* Large desktop optimizations */
+@media (min-width: 1200px) {
+  .stats-grid {
+    grid-template-columns: repeat(5, 1fr) !important;
+  }
+  
+  .stat-card {
+    padding: 20px;
+  }
+  
+  .stat-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.75rem;
+  }
+  
+  .stat-content h3 {
+    font-size: 1.8rem;
   }
 }
 </style>

@@ -422,17 +422,69 @@ export default {
   height: 1rem;
 }
 
-/* Desktop-only layout - no responsive adjustments */
-.login-wrapper {
-  flex-direction: row !important;
-  max-width: 1000px !important;
+/* Responsive layout */
+@media (max-width: 768px) {
+  .login-wrapper {
+    flex-direction: column !important;
+    max-width: 100% !important;
+    min-height: 100vh !important;
+    border-radius: 0 !important;
+  }
+  
+  .login-branding {
+    padding: 2rem 1rem !important;
+    min-height: 40vh;
+  }
+  
+  .login-form-section {
+    padding: 2rem 1rem !important;
+    min-height: 60vh;
+  }
+  
+  .brand-title {
+    font-size: 2rem !important;
+  }
+  
+  .brand-subtitle {
+    font-size: 1rem !important;
+  }
+  
+  .brand-features {
+    display: none;
+  }
 }
 
-.login-branding {
-  padding: 60px 40px !important;
+@media (min-width: 769px) and (max-width: 1024px) {
+  .login-wrapper {
+    flex-direction: row !important;
+    max-width: 900px !important;
+  }
+  
+  .login-branding {
+    padding: 3rem 2rem !important;
+  }
+  
+  .login-form-section {
+    padding: 3rem 2rem !important;
+  }
+  
+  .brand-title {
+    font-size: 2.5rem !important;
+  }
 }
 
-.login-form-section {
-  padding: 60px 40px !important;
+@media (min-width: 1025px) {
+  .login-wrapper {
+    flex-direction: row !important;
+    max-width: 1000px !important;
+  }
+  
+  .login-branding {
+    padding: 60px 40px !important;
+  }
+  
+  .login-form-section {
+    padding: 60px 40px !important;
+  }
 }
 </style>

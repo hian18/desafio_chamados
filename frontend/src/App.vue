@@ -32,7 +32,7 @@ export default {
 /* Bootstrap Icons - must be first */
 @import url('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css');
 
-/* Global styles - Desktop optimized */
+/* Global styles - Responsive */
 body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
@@ -41,40 +41,59 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   width: 100%;
-  min-width: 1200px;
-  overflow-x: auto;
   font-size: 14px;
+  line-height: 1.5;
 }
 
 * {
   box-sizing: border-box;
 }
 
-/* Force full width for all containers */
+/* Responsive containers */
 .container-fluid {
-  max-width: 100% !important;
-  width: 100% !important;
-  padding-left: 0.5rem !important;
-  padding-right: 0.5rem !important;
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-/* Remove any Bootstrap container limitations */
 .container {
-  max-width: 100% !important;
-  width: 100% !important;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
-/* Override Bootstrap row margins */
-.row {
-  margin-left: 0 !important;
-  margin-right: 0 !important;
+/* Mobile first approach */
+@media (max-width: 768px) {
+  .container-fluid {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  .container {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+  
+  body {
+    font-size: 13px;
+  }
 }
 
-/* Force all columns to use available space */
-.col, .col-1, .col-2, .col-3, .col-4, .col-5, .col-6, 
-.col-7, .col-8, .col-9, .col-10, .col-11, .col-12,
-.col-auto, .col-sm, .col-md, .col-lg, .col-xl, .col-xxl {
-  padding-left: 0.25rem !important;
-  padding-right: 0.25rem !important;
+/* Tablet */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1025px) {
+  .container-fluid {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }
 </style>
