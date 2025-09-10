@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from enum import Enum
+from django.utils.translation import gettext_lazy as _
 
 
 class TicketStatus(Enum):
@@ -20,19 +21,18 @@ class TicketStatus(Enum):
     def get_editable_choices(cls):
         """Returns only editable status choices (without resolved and closed)"""
         return [
-            (cls.OPEN.value, 'Open'),
-            (cls.IN_PROGRESS.value, 'In Progress'),
-            (cls.CANCELLED.value, 'Cancelled'),
+            (cls.OPEN.value, _('Aberto')),
+            (cls.IN_PROGRESS.value, _('Em Atendimento')),
         ]
 
     @classmethod
     def get_choices(cls):
         """Returns choices for Django model field"""
         return [
-            (cls.OPEN.value, 'Open'),
-            (cls.IN_PROGRESS.value, 'In Progress'),
-            (cls.RESOLVED.value, 'Resolved'),
-            (cls.CANCELLED.value, 'Cancelled'),
+            (cls.OPEN.value, _('Aberto')),
+            (cls.IN_PROGRESS.value, _('Em Atendimento')),
+            (cls.RESOLVED.value, _('Resolvido')),
+            (cls.CANCELLED.value, _('Cancelado')),
         ]
 
 
@@ -85,16 +85,16 @@ class BaseModel(models.Model):
 
 class Ticket(BaseModel):
     PRIORITY_CHOICES = [
-        ('low', 'Low'),
-        ('medium', 'Medium'),
-        ('high', 'High'),
-        ('urgent', 'Urgent'),
+        ('low', _('Baixa')),
+        ('medium', _('Média')),
+        ('high', _('Alta')),
+        ('urgent', _('Urgente')),
     ]
 
-    title = models.CharField(max_length=200, verbose_name='Title')
-    description = models.TextField(verbose_name='Description')
-    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium', verbose_name='Priority')
-    department = models.CharField(max_length=20, verbose_name='Department')
+    title = models.CharField(max_length=200, verbose_name=_('Title'))
+    description = models.TextField(verbose_name=_('Description'))
+    priority = models.CharField(max_length=10, choices=PRIORITY_CHOICES, default='medium', verbose_name=_('Priority'))
+    department = models.CharField(max_length=20, verbose_name=_('Department'))
     status = models.CharField(
         max_length=20, choices=TicketStatus.get_choices(), default=TicketStatus.OPEN.value, verbose_name='Status'
     )

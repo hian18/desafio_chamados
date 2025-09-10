@@ -4,11 +4,9 @@ from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
-from django.db import models
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework.exceptions import PermissionDenied
 from services.permissions import require_roles
-from services.roles import UserRole, SUPPORT_READ_ROLES, SUPPORT_UPDATE_ROLES
+from services.roles import SUPPORT_READ_ROLES, SUPPORT_UPDATE_ROLES
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.decorators import api_view, permission_classes
 
@@ -199,6 +197,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def send_notification(self, request):
         """Send custom notification via WebSocket"""
+        
         self._validate_read_role(request)
         message = request.data.get('message')
         notification_type = request.data.get('type', 'info')
