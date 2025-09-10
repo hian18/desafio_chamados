@@ -2,28 +2,26 @@
   <div class="dashboard">
     <!-- Header -->
     <header class="dashboard-header">
-      <div class="container-fluid px-4">
-        <div class="row align-items-center">
-          <div class="col">
-            <h1 class="dashboard-title">
-              <i class="bi bi-house"></i>
-              Dashboard
-            </h1>
-          </div>
-          <div class="col-auto">
-            <button @click="logout" class="btn btn-outline-danger">
-              <i class="bi bi-box-arrow-right"></i>
-              Sair
-            </button>
-          </div>
+      <div class="header-content">
+        <div class="header-left">
+          <h1 class="dashboard-title">
+            <i class="bi bi-house"></i>
+            Dashboard
+          </h1>
+        </div>
+        <div class="header-right">
+          <button @click="logout" class="btn btn-outline-danger">
+            <i class="bi bi-box-arrow-right"></i>
+            Sair
+          </button>
         </div>
       </div>
     </header>
 
     <!-- Stats Cards -->
-    <div class="container-fluid mt-3 px-4">
-      <div class="row g-2">
-        <div class="col-lg-2 col-md-4 col-sm-6">
+    <div class="stats-section">
+      <div class="stats-grid">
+        <div class="stat-item">
           <div class="stat-card">
             <div class="stat-icon bg-primary">
               <i class="bi bi-ticket-perforated"></i>
@@ -34,7 +32,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stat-item">
           <div class="stat-card">
             <div class="stat-icon bg-success">
               <i class="bi bi-circle"></i>
@@ -45,7 +43,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stat-item">
           <div class="stat-card">
             <div class="stat-icon bg-info">
               <i class="bi bi-arrow-clockwise"></i>
@@ -56,7 +54,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stat-item">
           <div class="stat-card">
             <div class="stat-icon bg-warning">
               <i class="bi bi-clock"></i>
@@ -67,7 +65,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stat-item">
           <div class="stat-card">
             <div class="stat-icon bg-success">
               <i class="bi bi-check-circle"></i>
@@ -78,7 +76,7 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-2 col-md-4 col-sm-6">
+        <div class="stat-item">
           <div class="stat-card">
             <div class="stat-icon bg-danger">
               <i class="bi bi-x-circle"></i>
@@ -93,56 +91,54 @@
     </div>
 
     <!-- Filters -->
-    <div class="container-fluid mt-4 px-4">
-      <div class="card">
-        <div class="card-body">
-          <div class="row">
-            <div class="col-md-3">
-              <label class="form-label">Status</label>
-              <select v-model="filters.status" @change="applyFilters" class="form-select">
-                <option value="">Todos</option>
-                <option value="open">Aberto</option>
-                <option value="in_progress">Em Progresso</option>
-                <option value="pending">Pendente</option>
-                <option value="resolved">Resolvido</option>
-                <option value="cancelled">Cancelado</option>
-              </select>
-            </div>
-            <div class="col-md-3">
-              <label class="form-label">Prioridade</label>
-              <select v-model="filters.priority" @change="applyFilters" class="form-select">
-                <option value="">Todas</option>
-                <option value="low">Baixa</option>
-                <option value="medium">Média</option>
-                <option value="high">Alta</option>
-                <option value="urgent">Urgente</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Buscar</label>
-              <input
-                v-model="filters.search"
-                @input="debounceSearch"
-                type="text"
-                class="form-control"
-                placeholder="Buscar por título ou descrição..."
-              />
-            </div>
-            <div class="col-md-2">
-              <label class="form-label">&nbsp;</label>
-              <button @click="clearFilters" class="btn btn-outline-secondary w-100">
-                <i class="bi bi-x-circle"></i>
-                Limpar
-              </button>
-            </div>
+    <div class="filters-section">
+      <div class="filters-card">
+        <div class="filters-grid">
+          <div class="filter-item">
+            <label class="form-label">Status</label>
+            <select v-model="filters.status" @change="applyFilters" class="form-select">
+              <option value="">Todos</option>
+              <option value="open">Aberto</option>
+              <option value="in_progress">Em Progresso</option>
+              <option value="pending">Pendente</option>
+              <option value="resolved">Resolvido</option>
+              <option value="cancelled">Cancelado</option>
+            </select>
+          </div>
+          <div class="filter-item">
+            <label class="form-label">Prioridade</label>
+            <select v-model="filters.priority" @change="applyFilters" class="form-select">
+              <option value="">Todas</option>
+              <option value="low">Baixa</option>
+              <option value="medium">Média</option>
+              <option value="high">Alta</option>
+              <option value="urgent">Urgente</option>
+            </select>
+          </div>
+          <div class="filter-item filter-search">
+            <label class="form-label">Buscar</label>
+            <input
+              v-model="filters.search"
+              @input="debounceSearch"
+              type="text"
+              class="form-control"
+              placeholder="Buscar por título ou descrição..."
+            />
+          </div>
+          <div class="filter-item">
+            <label class="form-label">&nbsp;</label>
+            <button @click="clearFilters" class="btn btn-outline-secondary w-100">
+              <i class="bi bi-x-circle"></i>
+              Limpar
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Tickets Table -->
-    <div class="container-fluid mt-4 px-4">
-      <div class="card">
+    <div class="table-section">
+      <div class="table-card">
         <div class="card-header">
           <h5 class="mb-0">Tickets</h5>
         </div>
@@ -420,6 +416,8 @@ export default {
   background-color: #f8f9fa;
   width: 100%;
   max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 .dashboard-header {
@@ -427,12 +425,29 @@ export default {
   border-bottom: 1px solid #dee2e6;
   padding: 1.5rem 0;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  width: 100%;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 1rem;
+  max-width: 100%;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.header-right {
+  flex-shrink: 0;
 }
 
 .dashboard-title {
   margin: 0;
   color: #333;
-  font-size: 1.5rem;
+  font-size: 1.8rem;
   font-weight: 600;
 }
 
@@ -444,12 +459,13 @@ export default {
 .stat-card {
   background: white;
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
   display: flex;
   align-items: center;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid #e9ecef;
+  min-height: 100px;
 }
 
 .stat-card:hover {
@@ -619,6 +635,95 @@ export default {
 .btn-outline-secondary:hover {
   background-color: #6c757d;
   border-color: #6c757d;
+}
+
+/* Global container overrides */
+.container-fluid {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Stats Section */
+.stats-section {
+  padding: 1rem;
+  width: 100%;
+}
+
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 1rem;
+  width: 100%;
+}
+
+.stat-item {
+  width: 100%;
+}
+
+/* Filters Section */
+.filters-section {
+  padding: 0 1rem 1rem 1rem;
+  width: 100%;
+}
+
+.filters-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+}
+
+.filters-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2fr 1fr;
+  gap: 1rem;
+  width: 100%;
+}
+
+.filter-item {
+  width: 100%;
+}
+
+.filter-search {
+  grid-column: span 2;
+}
+
+/* Table Section */
+.table-section {
+  padding: 0 1rem 1rem 1rem;
+  width: 100%;
+}
+
+.table-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  overflow: hidden;
+}
+
+/* Desktop-only layout - no mobile adjustments */
+.stats-grid {
+  grid-template-columns: repeat(6, 1fr) !important;
+  gap: 1rem !important;
+}
+
+.filters-grid {
+  grid-template-columns: 1fr 1fr 2fr 1fr !important;
+  gap: 1rem !important;
+}
+
+.filter-search {
+  grid-column: span 1 !important;
+}
+
+.header-content {
+  flex-direction: row !important;
+  justify-content: space-between !important;
+  align-items: center !important;
 }
 
 /* Desktop-specific optimizations */

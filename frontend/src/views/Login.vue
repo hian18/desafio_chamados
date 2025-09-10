@@ -182,7 +182,7 @@ export default {
 .login-wrapper {
   display: flex;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   background: white;
   border-radius: 20px;
   box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
@@ -417,41 +417,17 @@ export default {
   height: 1rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .login-wrapper {
-    flex-direction: column;
-    max-width: 500px;
-  }
-  
-  .login-branding {
-    padding: 40px 20px;
-  }
-  
-  .brand-title {
-    font-size: 2rem;
-  }
-  
-  .login-form-section {
-    padding: 40px 20px;
-  }
+/* Desktop-only layout - no responsive adjustments */
+.login-wrapper {
+  flex-direction: row !important;
+  max-width: 1000px !important;
 }
 
-@media (max-width: 480px) {
-  .login-container {
-    padding: 10px;
-  }
-  
-  .login-wrapper {
-    border-radius: 15px;
-  }
-  
-  .brand-title {
-    font-size: 1.8rem;
-  }
-  
-  .form-title {
-    font-size: 1.5rem;
-  }
+.login-branding {
+  padding: 60px 40px !important;
+}
+
+.login-form-section {
+  padding: 60px 40px !important;
 }
 </style>

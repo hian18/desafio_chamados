@@ -287,6 +287,8 @@ export default {
   background-color: #f8f9fa;
   width: 100%;
   max-width: none;
+  margin: 0;
+  padding: 0;
 }
 
 .ticket-header {
@@ -382,6 +384,19 @@ export default {
 .btn-outline-secondary:hover {
   background-color: #6c757d;
   border-color: #6c757d;
+}
+
+/* Global container overrides - Desktop optimized */
+.container-fluid {
+  max-width: 100% !important;
+  width: 100% !important;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Desktop-only layout */
+.ticket-detail {
+  min-width: 1200px;
 }
 
 /* Desktop-specific optimizations */
