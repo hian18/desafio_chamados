@@ -1,3 +1,5 @@
+import logging
+
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -8,6 +10,7 @@ from django.utils.translation import gettext as _
 from services import websocket_service 
 from core.models import Ticket, TicketStatus
 
+logger = logging.getLogger(__name__)
 
 def login_view(request):
     """Login page"""
@@ -119,7 +122,7 @@ def create_ticket_view(request):
             return redirect('front:ticket_detail', ticket_id=ticket.id)
         except Exception as e:
             messages.error(request, f'Error creating ticket: {str(e)}')
-            print(f"ERROR: {str(e)}")
+            logger.exception("Error creating ticket")
             return redirect('front:dashboard')
 
     return redirect('front:dashboard')
