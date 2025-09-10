@@ -28,7 +28,6 @@ class TicketConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         message = text_data_json['message']
-        
         # Send message to room group
         await self.channel_layer.group_send(
             self.room_group_name,
@@ -41,7 +40,6 @@ class TicketConsumer(AsyncWebsocketConsumer):
     # Receive message from room group
     async def ticket_notification(self, event):
         message = event['message']
-        
         # Send message to WebSocket
         await self.send(text_data=json.dumps({
             'type': 'notification',
@@ -73,4 +71,14 @@ class TicketConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             'type': 'ticket_resolved',
             'ticket': ticket_data
+        }))
+
+    # Receive custom notification
+    async def custom_notification(self, event):
+        message = event['message']
+        notification_type = event.get('notification_type', 'info')
+        await self.send(text_data=json.dumps({
+            'type': 'custom_notification',
+            'message': message,
+            'notification_type': notification_type
         }))

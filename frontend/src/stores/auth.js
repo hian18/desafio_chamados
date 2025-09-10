@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import axios from 'axios'
+import notificationService from '@/services/notificationService'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
@@ -25,6 +26,9 @@ export const useAuthStore = defineStore('auth', {
         
         // Set default authorization header
         axios.defaults.headers.common['Authorization'] = `Bearer ${access}`
+        
+        // Configure notification service with token
+        notificationService.setAuthToken(access)
         
         // Get user info
         await this.getUserInfo()
@@ -84,12 +88,16 @@ export const useAuthStore = defineStore('auth', {
       localStorage.removeItem('token')
       localStorage.removeItem('refresh')
       delete axios.defaults.headers.common['Authorization']
+      
+      // Remove token from notification service
+      notificationService.removeAuthToken()
     },
 
     initializeAuth() {
       if (this.token) {
         this.isAuthenticated = true
         axios.defaults.headers.common['Authorization'] = `Bearer ${this.token}`
+        notificationService.setAuthToken(this.token)
         this.getUserInfo()
       }
     }

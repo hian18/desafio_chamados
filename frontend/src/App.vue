@@ -1,10 +1,30 @@
 <template>
-  <router-view />
+  <div>
+    <router-view />
+    <NotificationToast 
+      :notifications="notifications" 
+      @remove-notification="removeNotification"
+    />
+  </div>
 </template>
 
 <script>
+import { useWebSocket } from '@/composables/useWebSocket'
+import NotificationToast from '@/components/NotificationToast.vue'
+
 export default {
-  name: 'App'
+  name: 'App',
+  components: {
+    NotificationToast
+  },
+  setup() {
+    const { notifications, removeNotification } = useWebSocket()
+    
+    return {
+      notifications,
+      removeNotification
+    }
+  }
 }
 </script>
 

@@ -10,6 +10,10 @@
           </h1>
         </div>
         <div class="header-right">
+          <button @click="testNotification" class="btn btn-outline-info me-2">
+            <i class="bi bi-bell"></i>
+            Testar Notificação
+          </button>
           <button @click="logout" class="btn btn-outline-danger">
             <i class="bi bi-box-arrow-right"></i>
             Sair
@@ -242,6 +246,8 @@
 import { useAuthStore } from '@/stores/auth'
 import { useTicketsStore } from '@/stores/tickets'
 import { useRouter } from 'vue-router'
+import { useWebSocket } from '@/composables/useWebSocket'
+import notificationService from '@/services/notificationService'
 
 export default {
   name: 'Dashboard',
@@ -249,11 +255,24 @@ export default {
     const authStore = useAuthStore()
     const ticketsStore = useTicketsStore()
     const router = useRouter()
+    const { notifications } = useWebSocket()
 
     return {
       authStore,
       ticketsStore,
-      router
+      router,
+      notifications
+    }
+  },
+  watch: {
+    notifications: {
+      handler(newNotifications) {
+        if (newNotifications.length > 0) {
+          // Reload data when we receive notifications
+          this.loadData()
+        }
+      },
+      deep: true
     }
   },
   data() {
@@ -353,6 +372,14 @@ export default {
     logout() {
       this.authStore.logout()
       this.router.push('/login')
+    },
+    
+    async testNotification() {
+      try {
+        await notificationService.sendSuccessNotification('Esta é uma notificação de teste!')
+      } catch (error) {
+        console.error('Erro ao enviar notificação:', error)
+      }
     },
     
     getStatusBadgeClass(status) {
