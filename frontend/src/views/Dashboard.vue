@@ -58,17 +58,7 @@
             </div>
           </div>
         </div>
-        <div class="stat-item">
-          <div class="stat-card">
-            <div class="stat-icon bg-warning">
-              <i class="bi bi-clock"></i>
-            </div>
-            <div class="stat-content">
-              <h3>{{ stats.pending }}</h3>
-              <p>Pendentes</p>
-            </div>
-          </div>
-        </div>
+        
         <div class="stat-item">
           <div class="stat-card">
             <div class="stat-icon bg-success">
