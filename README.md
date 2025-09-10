@@ -21,7 +21,7 @@ Sistema de gestão de tickets com interface web responsiva, API REST e notifica�
 ## 📋 Pré-requisitos
 
 - Python 3.10+
-- Node.js 16+
+- Node.js 20.10+
 - npm ou yarn
 
 ## 🛠️ Instalação
