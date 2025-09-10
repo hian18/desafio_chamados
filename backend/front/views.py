@@ -4,7 +4,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.utils.translation import gettext as _
-from services.websocket_service import WebSocketNotificationService
+
+from services import websocket_service 
 from core.models import Ticket, TicketStatus
 
 
@@ -113,7 +114,7 @@ def create_ticket_view(request):
                 department=department,
                 created_by=request.user,
             )
-            WebSocketNotificationService.send_ticket_created(ticket)
+            websocket_service.send_ticket_created(ticket)
             messages.success(request, f'Ticket #{ticket.id} created successfully!')
             return redirect('front:ticket_detail', ticket_id=ticket.id)
         except Exception as e:

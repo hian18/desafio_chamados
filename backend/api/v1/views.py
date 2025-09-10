@@ -5,10 +5,10 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db import models
-from channels.layers import get_channel_layer
-from asgiref.sync import async_to_sync
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from core.models import Ticket, TicketStatus
+from drf_spectacular.utils import extend_schema, OpenApiResponse
+from rest_framework.decorators import api_view, permission_classes
+
 from .serializers import (
     ApiInfoSerializer,
     HealthCheckSerializer,
@@ -16,8 +16,8 @@ from .serializers import (
     TicketCreateSerializer,
     TicketUpdateSerializer,
 )
-from drf_spectacular.utils import extend_schema, OpenApiResponse
-from rest_framework.decorators import api_view, permission_classes
+from services import websocket_service
+from core.models import Ticket, TicketStatus
 
 
 @extend_schema(
@@ -108,27 +108,14 @@ class TicketViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         """Set the created_by field to the current user"""
         ticket = serializer.save(created_by=self.request.user)
-        self.send_ticket_notification('ticket_created', ticket)
+        websocket_service.send_ticket_created(ticket)
         return ticket
 
     def perform_update(self, serializer):
         """Set the updated_by field to the current user"""
         ticket = serializer.save(updated_by=self.request.user)
-        self.send_ticket_notification('ticket_updated', ticket)
+        websocket_service.send_ticket_updated(ticket)
         return ticket
-
-    def send_ticket_notification(self, notification_type, ticket):
-        """Send WebSocket notification"""
-        channel_layer = get_channel_layer()
-        if channel_layer:
-            ticket_data = TicketSerializer(ticket).data
-            async_to_sync(channel_layer.group_send)(
-                'ticket_notifications',
-                {
-                    'type': notification_type,
-                    'ticket': ticket_data
-                }
-            )
 
     @extend_schema(summary="Mark ticket as resolved", description="Mark a ticket as resolved")
     @action(detail=True, methods=['post'])
@@ -148,14 +135,11 @@ class TicketViewSet(viewsets.ModelViewSet):
                 {'error': 'You do not have permission to resolve this ticket.'}, status=status.HTTP_403_FORBIDDEN
             )
 
-        # Update ticket status
+        # Resolve ticket using service
         ticket.status = TicketStatus.RESOLVED.value
         ticket.updated_by = request.user
         ticket.save()
-
-        # Send WebSocket notification
-        self.send_ticket_notification('ticket_resolved', ticket)
-
+        websocket_service.send_ticket_resolved(ticket)
         serializer = self.get_serializer(ticket)
         return Response(serializer.data)
 
@@ -163,8 +147,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def stats(self, request):
         """Get ticket statistics"""
-        queryset = self.get_queryset()
-
+        queryset = Ticket.objects.all()
         stats = {
             'total': queryset.count(),
             'open': queryset.filter(status=TicketStatus.OPEN.value).count(),
@@ -172,5 +155,17 @@ class TicketViewSet(viewsets.ModelViewSet):
             'resolved': queryset.filter(status=TicketStatus.RESOLVED.value).count(),
             'cancelled': queryset.filter(status=TicketStatus.CANCELLED.value).count(),
         }
-
         return Response(stats)
+
+    @extend_schema(summary="Send custom notification", description="Send a custom notification via WebSocket")
+    @action(detail=False, methods=['post'])
+    def send_notification(self, request):
+        """Send custom notification via WebSocket"""
+        message = request.data.get('message')
+        notification_type = request.data.get('type', 'info')
+
+        if not message:
+            return Response({'error': 'Message is required'}, status=status.HTTP_400_BAD_REQUEST)
+        websocket_service.send_custom_notification(message, notification_type)
+
+        return Response({'success': True, 'message': 'Notification sent successfully'})
