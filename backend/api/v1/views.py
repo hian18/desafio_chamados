@@ -7,6 +7,8 @@ from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db import models
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework.exceptions import PermissionDenied
+from services.permissions import require_roles
+from services.roles import UserRole, SUPPORT_READ_ROLES, SUPPORT_UPDATE_ROLES
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.decorators import api_view, permission_classes
 
@@ -124,17 +126,11 @@ class TicketViewSet(viewsets.ModelViewSet):
 
     # ----- Role validation for updates -----
     def _validate_update_role(self, request, ticket):
-        user = request.user
-        allowed_roles = {'admin', 'technician'}
-        if not (getattr(user, 'is_superuser', False) or getattr(user, 'role', None) in allowed_roles):
-            raise PermissionDenied('Você não tem permissão para atualizar tickets.')
+        require_roles(request.user, SUPPORT_UPDATE_ROLES)
 
     # ----- Role validation for reads/API -----
     def _validate_read_role(self, request):
-        user = request.user
-        allowed_roles = {'admin', 'technician'}
-        if not (getattr(user, 'is_superuser', False) or getattr(user, 'role', None) in allowed_roles):
-            raise PermissionDenied('Você não tem permissão para acessar estes recursos.')
+        require_roles(request.user, SUPPORT_READ_ROLES)
 
     def update(self, request, *args, **kwargs):  # type: ignore[override]
         instance = self.get_object()

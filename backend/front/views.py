@@ -7,10 +7,13 @@ from django.contrib import messages
 from django.core.paginator import Paginator
 from django.utils.translation import gettext as _
 
-from services import websocket_service 
+from services import websocket_service
+from services.permissions import require_roles_or_redirect, require_roles_view
+from services.roles import AGENT_ROLES
 from core.models import Ticket, TicketStatus
 
 logger = logging.getLogger(__name__)
+
 
 def login_view(request):
     """Login page"""
@@ -40,7 +43,13 @@ def logout_view(request):
     return redirect('front:login')
 
 
+def forbidden_view(request):
+    """Página de acesso negado (sem permissão)"""
+    return render(request, 'front/forbidden.html', status=403)
+
+
 @login_required
+@require_roles_view(AGENT_ROLES)
 def dashboard_view(request):
     # Get filter parameters
     status_filter = request.GET.get('status', '')
@@ -75,8 +84,13 @@ def dashboard_view(request):
 
 
 @login_required
+@require_roles_view(AGENT_ROLES)
 def ticket_detail_view(request, ticket_id):
     """Ticket detail view"""
+    # Role validation
+    redir = require_roles_or_redirect(request, AGENT_ROLES)
+    if redir:
+        return redir
     try:
         ticket = Ticket.objects.get(id=ticket_id)
     except Ticket.DoesNotExist:
@@ -90,6 +104,7 @@ def ticket_detail_view(request, ticket_id):
 
 
 @login_required
+@require_roles_view(AGENT_ROLES)
 def create_ticket_view(request):
     if request.method == 'POST':
         title = request.POST.get('title', '').strip()
@@ -129,6 +144,7 @@ def create_ticket_view(request):
 
 
 @login_required
+@require_roles_view(AGENT_ROLES)
 def edit_ticket_view(request, ticket_id):
     try:
         ticket = Ticket.objects.get(id=ticket_id)
