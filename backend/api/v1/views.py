@@ -6,6 +6,7 @@ from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from django.db import models
 from drf_spectacular.utils import extend_schema, extend_schema_view
+from rest_framework.exceptions import PermissionDenied
 from drf_spectacular.utils import extend_schema, OpenApiResponse
 from rest_framework.decorators import api_view, permission_classes
 
@@ -97,13 +98,17 @@ class TicketViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         """Filter tickets based on user permissions"""
         queryset = super().get_queryset()
-        user = self.request.user
-
-        # If user is not superuser, filter by created_by or assigned_to
-        if not user.is_superuser:
-            queryset = queryset.filter(models.Q(created_by=user) | models.Q(assigned_to=user))
 
         return queryset
+
+    # ----- Disable POST (create) and DELETE (destroy) on the resource -----
+    def create(self, request, *args, **kwargs):  # type: ignore[override]
+        return Response({'detail': 'Method "POST" not allowed on tickets.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED)
+
+    def destroy(self, request, *args, **kwargs):  # type: ignore[override]
+        return Response(
+            {'detail': 'Method "DELETE" not allowed on tickets.'}, status=status.HTTP_405_METHOD_NOT_ALLOWED
+        )
 
     def perform_create(self, serializer):
         """Set the created_by field to the current user"""
@@ -117,22 +122,58 @@ class TicketViewSet(viewsets.ModelViewSet):
         websocket_service.send_ticket_updated(ticket)
         return ticket
 
+    # ----- Role validation for updates -----
+    def _validate_update_role(self, request, ticket):
+        user = request.user
+        allowed_roles = {'admin', 'technician'}
+        if not (getattr(user, 'is_superuser', False) or getattr(user, 'role', None) in allowed_roles):
+            raise PermissionDenied('Você não tem permissão para atualizar tickets.')
+
+    # ----- Role validation for reads/API -----
+    def _validate_read_role(self, request):
+        user = request.user
+        allowed_roles = {'admin', 'technician'}
+        if not (getattr(user, 'is_superuser', False) or getattr(user, 'role', None) in allowed_roles):
+            raise PermissionDenied('Você não tem permissão para acessar estes recursos.')
+
+    def update(self, request, *args, **kwargs):  # type: ignore[override]
+        instance = self.get_object()
+        self._validate_update_role(request, instance)
+        serializer = self.get_serializer(instance, data=request.data, partial=False)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    def partial_update(self, request, *args, **kwargs):  # type: ignore[override]
+        instance = self.get_object()
+        self._validate_update_role(request, instance)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        self.perform_update(serializer)
+        return Response(serializer.data)
+
+    # ----- Read methods with role validation -----
+    def list(self, request, *args, **kwargs):  # type: ignore[override]
+        self._validate_read_role(request)
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):  # type: ignore[override]
+        self._validate_read_role(request)
+        return super().retrieve(request, *args, **kwargs)
+
     @extend_schema(summary="Mark ticket as resolved", description="Mark a ticket as resolved")
     @action(detail=True, methods=['post'])
     def resolve(self, request, pk=None):
         """Mark ticket as resolved"""
         ticket = self.get_object()
 
+        # Check permissions
+        self._validate_update_role(request, ticket)
+
         # Check if ticket can be resolved
         if ticket.status in TicketStatus.get_non_editable_statuses():
             return Response(
                 {'error': 'Cannot resolve closed or cancelled tickets.'}, status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Check permissions
-        if ticket.created_by != request.user and ticket.assigned_to != request.user and not request.user.is_superuser:
-            return Response(
-                {'error': 'You do not have permission to resolve this ticket.'}, status=status.HTTP_403_FORBIDDEN
             )
 
         # Resolve ticket using service
@@ -147,6 +188,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def stats(self, request):
         """Get ticket statistics"""
+        self._validate_read_role(request)
         queryset = Ticket.objects.all()
         stats = {
             'total': queryset.count(),
@@ -161,6 +203,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['post'])
     def send_notification(self, request):
         """Send custom notification via WebSocket"""
+        self._validate_read_role(request)
         message = request.data.get('message')
         notification_type = request.data.get('type', 'info')
 
