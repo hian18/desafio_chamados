@@ -1,5 +1,6 @@
 {% extends 'front/base.html' %}
 {% load i18n %}
+{% load static %}
 
 {% block title %}{% trans "Login" %} - OpenTicket{% endblock %}
 
@@ -53,9 +54,7 @@
                 <div class="card login-card shadow-lg border-0">
                     <div class="card-body p-5">
                         <div class="text-center mb-4">
-                            <div class="bg-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 80px; height: 80px;">
-                                <i class="bi bi-ticket-perforated text-white" style="font-size: 2.5rem;"></i>
-                            </div>
+                            <img src="{% static 'Logo-Padrao.png' %}" alt="OpenTicket" class="mb-3" style="height: 64px; width: auto;" />
                             <h2 class="fw-bold text-dark mb-2">OpenTicket</h2>
                             <p class="text-muted mb-0">{% trans "Sign in to your account" %}</p>
                         </div>
@@ -98,7 +97,7 @@
                                     <small class="text-muted">
                                         <i class="bi bi-info-circle me-1"></i>
                                         <strong>{% trans "Demo credentials" %}:</strong><br>
-                                        <code>admin@openticket.com</code> / <code>admin123</code>
+                                        <code>agent@cloudpark.com</code> / <code>123</code>
                                     </small>
                                 </div>
                             </div>
